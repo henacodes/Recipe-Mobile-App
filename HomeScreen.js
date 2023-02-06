@@ -156,7 +156,7 @@ export default function HomeScreen({ navigation }) {
             renderItem={({ item, index }) => (
               <TouchableOpacity
                 onPress={() => handleCategories(categories[index])}
-                className={assignClass(categories[0])}
+                className={assignClass(categories[index])}
               >
                 <Text className="text-accent_color">{categories[index]}</Text>
               </TouchableOpacity>

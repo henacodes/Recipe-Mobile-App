@@ -58,20 +58,7 @@ export default function RecipesScreen({ navigation }) {
       className="px-4 py-9 bg-[#f6f6f6]"
       keyboardDismissMode="interactive"
     >
-      <SafeAreaView style={{ flex: 1 }}>
-        <Text className="text-lg">Recipe List Screen</Text>
-        <FlatList
-          data={recipes}
-          renderItem={({ item }) => (
-            <Recipe
-              key={item.id}
-              title={item.title}
-              category={item.category}
-              img={item.img}
-            />
-          )}
-        />
-      </SafeAreaView>
+      <Recipe />
     </ScrollView>
   );
 }
