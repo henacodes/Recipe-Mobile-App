@@ -9,9 +9,11 @@ import {
   FlatList,
   SafeAreaView,
   Modal,
+  Alert,
 } from "react-native";
 
 import Recipe from "./Recipe";
+import RecipeDetailScreen from "./RecipeDetailScreen";
 // Icon dependency
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useEffect, useState } from "react";
@@ -23,6 +25,9 @@ export default function HomeScreen({ navigation }) {
   const [activeCategory, setActiveCategory] = useState(null);
   const [categoryMeals, setCategoryMeals] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
+  const [recipeDetailModal, setRecipeDetailModal] = useState(false);
+  const [mealDetail, setMealDetail] = useState({});
+  const API_URI = "https://www.themealDb.com/api/json/v1/1";
   const shortenStr = (word) => {
     if (word.length >= 14) {
       const newWord = word.slice(0, 13);
@@ -38,12 +43,23 @@ export default function HomeScreen({ navigation }) {
 
   const handleSearch = () => {
     axios
-      .get(
-        `https://www.themealdb.com/api/json/v1/1/search.php?s=${searchQuery}`
-      )
+      .get(`${API_URI}/search.php?s=${searchQuery}`)
       .then((res) => setSearchResults(res.data.meals))
       .catch((err) => console.log(err));
     return setModalVisible(true);
+  };
+
+  const showSearchDetail = (item) => {
+    setMealDetail(item);
+    setRecipeDetailModal(true);
+  };
+
+  const showDetailModal = (id) => {
+    axios
+      .get(`https://www.themealdb.com/api/json/v1/1/lookup.php?i=${id}`)
+      .then((res) => setMealDetail(res.data.meals[0]))
+      .catch((err) => console.log(err));
+    setRecipeDetailModal(true);
   };
 
   assignClass = (cat) => {
@@ -72,20 +88,16 @@ export default function HomeScreen({ navigation }) {
 
   useEffect(() => {
     axios
-      .get("https://www.themealdb.com/api/json/v1/1/random.php")
+      .get(`${API_URI}/random.php`)
       .then((res) => setRandomMeal(res.data.meals[0]))
       .catch((err) => console.log("error happened hena"));
   }, []);
   useEffect(() => {
     axios
-      .get(
-        `https://www.themealdb.com/api/json/v1/1/filter.php?c=${activeCategory}`
-      )
+      .get(`${API_URI}/filter.php?c=${activeCategory}`)
       .then((res) => setCategoryMeals(res.data.meals))
       .catch((err) => console.log(err));
   }, [activeCategory]);
-
-  console.log(searchResults);
 
   return (
     <>
@@ -104,14 +116,18 @@ export default function HomeScreen({ navigation }) {
             <Ionicons name="close-circle-outline" color={"red"} size={24} />
           </Text>
         </View>
-
         <ScrollView className="">
           <SafeAreaView style={{ flex: 1 }}>
             <FlatList
-              data={searchResults}
+              data={searchResults ? searchResults.slice(0, 10) : []}
               renderItem={({ item }) => (
                 <Recipe
+                  item={item}
+                  showSearchDetail={showSearchDetail}
+                  setMealDetail={setMealDetail}
+                  setRecipeDetailModal={setRecipeDetailModal}
                   key={item.idMeal}
+                  id={item.idMeal}
                   title={item.strMeal}
                   category={activeCategory}
                   img={item.strMealThumb}
@@ -120,6 +136,12 @@ export default function HomeScreen({ navigation }) {
             />
           </SafeAreaView>
         </ScrollView>
+      </Modal>
+      <Modal animationType="slide" visible={recipeDetailModal}>
+        <RecipeDetailScreen
+          meal={mealDetail}
+          setRecipeDetailModal={setRecipeDetailModal}
+        />
       </Modal>
       <ScrollView
         className="px-4 py-9 bg-[#f6f6f6]"
@@ -170,7 +192,11 @@ export default function HomeScreen({ navigation }) {
                 data={categoryMeals}
                 renderItem={({ item }) => (
                   <Recipe
+                    setMealDetail={setMealDetail}
+                    showDetailModal={showDetailModal}
+                    setRecipeDetailModal={setRecipeDetailModal}
                     key={item.idMeal}
+                    id={item.idMeal}
                     title={item.strMeal}
                     category={activeCategory}
                     img={item.strMealThumb}
@@ -182,20 +208,22 @@ export default function HomeScreen({ navigation }) {
         ) : (
           <View>
             <Text className="text-xl font-bold">Featured Meal</Text>
-            <Image
-              source={{
-                uri: randomMeal.strMealThumb,
-              }}
-              className="w-[100%] h-[400px] mt-10 rounded-3xl mb-[-400px]"
-            />
-            <View className="w-[100%] h-[400px]  bg-slate-900/60 rounded-3xl mb-[-100px]"></View>
+            <TouchableOpacity onPress={() => showSearchDetail(randomMeal)}>
+              <Image
+                source={{
+                  uri: randomMeal.strMealThumb,
+                }}
+                className="w-[100%] h-[400px] mt-10 rounded-3xl mb-[-400px]"
+              />
+              <View className="w-[100%] h-[400px]  bg-slate-900/60 rounded-3xl mb-[-100px]"></View>
 
-            <View className="mb-[130px] ml-10">
-              <Text className=" text-4xl text-slate-100 font-bold ">
-                {randomMeal.strMeal ? shortenStr(randomMeal.strMeal) : null}
-              </Text>
-              <Text className="text-slate-200">{randomMeal.strCategory}</Text>
-            </View>
+              <View className="mb-[130px] ml-10">
+                <Text className=" text-4xl text-slate-100 font-bold ">
+                  {randomMeal.strMeal ? shortenStr(randomMeal.strMeal) : null}
+                </Text>
+                <Text className="text-slate-200">{randomMeal.strCategory}</Text>
+              </View>
+            </TouchableOpacity>
           </View>
         )}
       </ScrollView>

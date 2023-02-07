@@ -17,7 +17,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
 // Custom Components
 import HomeScreen from "./HomeScreen";
-import RecipesScreen from "./RecipesScreen";
+import About from "./About";
 
 // Icon Library
 import Ionicons from "@expo/vector-icons/Ionicons";
@@ -47,7 +47,7 @@ export default function App() {
         })}
       >
         <Tab.Screen name="Home" component={HomeScreen} />
-        <Tab.Screen name="About" component={RecipesScreen} />
+        <Tab.Screen name="About" component={About} />
       </Tab.Navigator>
     </NavigationContainer>
   );
