@@ -8,20 +8,20 @@ import {
   TouchableOpacity,
   FlatList,
 } from "react-native";
-import { Feather, Ionicons } from "@expo/vector-icons";
+import { Feather, Ionicons, AntDesign } from "@expo/vector-icons";
 
 import Ingredient from "./Ingredient";
 import { SafeAreaView } from "react-native-safe-area-context";
 export default function RecipeDetailScreen({ meal, setRecipeDetailModal }) {
   return (
     <ScrollView className="bg-slate-100">
-      <View className="pt-8 px-8">
+      <View className="pt-8 px-3">
         <View className="flex flex-row justify-between items-center">
           <TouchableOpacity
             className="bg-[red]"
             onPress={() => setRecipeDetailModal(false)}
           >
-            <Ionicons name="close-circle-outline" color={"red"} size={30} />
+            <AntDesign name="arrowleft" size={24} color="black" />
           </TouchableOpacity>
           <Text className="text-[#111] font-bold text-2xl p-2">
             {meal.strMeal}

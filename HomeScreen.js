@@ -10,12 +10,13 @@ import {
   SafeAreaView,
   Modal,
   Alert,
+  StatusBar,
 } from "react-native";
 
 import Recipe from "./Recipe";
 import RecipeDetailScreen from "./RecipeDetailScreen";
 // Icon dependency
-import Ionicons from "@expo/vector-icons/Ionicons";
+import { Ionicons, AntDesign } from "@expo/vector-icons";
 import { useEffect, useState } from "react";
 import axios from "axios";
 export default function HomeScreen({ navigation }) {
@@ -64,7 +65,7 @@ export default function HomeScreen({ navigation }) {
 
   assignClass = (cat) => {
     if (cat == activeCategory) {
-      return "bg-[#111] rounded-md px-4 py-3 m-2 w-[100px] flex items-center  shadow shadow-gray-400";
+      return "bg-[#111] rounded-md px-4 py-3 m-2 w-[100px] flex flex-row justify-center items-center  shadow shadow-gray-400";
     } else {
       return "bg-[#fff] rounded-md px-4 py-3 m-2 w-[100px] flex items-center  shadow shadow-gray-400";
     }
@@ -101,22 +102,29 @@ export default function HomeScreen({ navigation }) {
 
   return (
     <>
-      <Modal className="mb-[50px]" animationType="slide" visible={modalVisible}>
-        <View className="flex flex-row justify-between items-center m-3 px-5 pt-5">
-          <Text className="text-lg">
-            Search Results for{" "}
-            <Text className="text-accent_color">'{searchQuery}'</Text>{" "}
-          </Text>
+      <StatusBar animated={true} backgroundColor="#34bd6a" />
+      <Modal
+        className="mb-[50px] bg-[#ff2e2e] "
+        animationType="slide"
+        visible={modalVisible}
+      >
+        <View className="flex flex-row  justify-between items-center m-3 px-5 pt-5">
           <Text
             onPress={() => {
               setModalVisible(false);
               setSearchResults(null);
             }}
           >
-            <Ionicons name="close-circle-outline" color={"red"} size={24} />
+            <AntDesign name="arrowleft" size={24} color="black" />
+          </Text>
+          <Text className="text-lg">
+            Search Results for
+            <Text className="text-accent_color">
+              '{" " + searchQuery}'
+            </Text>{" "}
           </Text>
         </View>
-        <ScrollView className="">
+        <ScrollView className=" bg-[#f6f6f6]">
           <SafeAreaView style={{ flex: 1 }}>
             <FlatList
               data={searchResults ? searchResults.slice(0, 10) : []}
@@ -144,7 +152,7 @@ export default function HomeScreen({ navigation }) {
         />
       </Modal>
       <ScrollView
-        className="px-4 py-9 bg-[#f6f6f6]"
+        className="px-2 py-9 bg-[#f6f6f6]"
         keyboardDismissMode="interactive"
       >
         {/* Header */}
@@ -180,7 +188,9 @@ export default function HomeScreen({ navigation }) {
                 onPress={() => handleCategories(categories[index])}
                 className={assignClass(categories[index])}
               >
-                <Text className="text-accent_color">{categories[index]}</Text>
+                <Text className="text-accent_color text-lg font-bold ">
+                  {categories[index]}
+                </Text>
               </TouchableOpacity>
             )}
           />
@@ -190,6 +200,7 @@ export default function HomeScreen({ navigation }) {
             <SafeAreaView style={{ flex: 1 }}>
               <FlatList
                 data={categoryMeals}
+                className="mb-10"
                 renderItem={({ item }) => (
                   <Recipe
                     setMealDetail={setMealDetail}
@@ -207,13 +218,13 @@ export default function HomeScreen({ navigation }) {
           </ScrollView>
         ) : (
           <View>
-            <Text className="text-xl font-bold">Featured Meal</Text>
+            <Text className="text-3xl mt-10 font-bold">Featured Meal</Text>
             <TouchableOpacity onPress={() => showSearchDetail(randomMeal)}>
               <Image
                 source={{
                   uri: randomMeal.strMealThumb,
                 }}
-                className="w-[100%] h-[400px] mt-10 rounded-3xl mb-[-400px]"
+                className="w-[100%] h-[400px] mt-5 rounded-3xl mb-[-400px]"
               />
               <View className="w-[100%] h-[400px]  bg-slate-900/60 rounded-3xl mb-[-100px]"></View>
 

@@ -10,6 +10,7 @@ import {
   Button,
   FlatList,
   SafeAreaView,
+  StatusBar,
 } from "react-native";
 import { useState, useEffect } from "react";
 import axios from "axios";
@@ -25,6 +26,7 @@ export default function About({ navigation }) {
       className="px-4 py-9 bg-[#f6f6f6] "
       keyboardDismissMode="interactive"
     >
+      <StatusBar animated={true} backgroundColor="#34bd6a" />
       <Text>
         Hello, I am <Text className="text-accent_color font-bold">Henok</Text>{" "}
         and I built this app as a way of learning React Native
